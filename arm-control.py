@@ -40,7 +40,7 @@ def send_all(event=None):
       tosend +=str( int(start +  float(joints[i].get()) / 100.0  * range_m ))
     else:
       tosend +=str( int(start + float((joints[i].get()) / 100.0 * -1.0 + 1.0)  * range_m))
-  print "Sending -> " + tosend
+  print("Sending -> " + tosend)
   ser.write(tosend)
   last_send = time.time()
   #time.sleep(0.1)
@@ -51,12 +51,12 @@ def save_state(event=None):
   global saves
   #commands[event.widget.row][3] = commands[event.widget.row][3][:]
   for i in range(6):
-    print saves[i]
+    print(saves[i])
   saves[event.widget.row] = [150] * 6
   for i in range(len(joints)):
     saves[event.widget.row][i] = joints[i].get()
   for i in range(6):
-    print saves[i]
+    print(saves[i])
   commands[event.widget.row][1]["text"] = "-Goto-"
 
 def run_this(event=None):
@@ -74,11 +74,11 @@ def run_this(event=None):
     event = event.widget.row
   
   if step == -1:  # First time run
-    print "row-run" + str(event)
+    print("row-run" + str(event))
     if saves[event] == None:
-      print "nothing saved"
+      print("nothing saved")
       return
-    print "First"
+    print("First")
     # Save current position
     for i in range(len(joints)):
       original[i] = float(joints[i].get())
@@ -88,11 +88,11 @@ def run_this(event=None):
       delta[i] = float(saves[event][i] - original[i] ) / (slew_steps * float(dwell.get()))
     step = step + 1
   if step > slew_steps * float(dwell.get()):
-    print "done!"
+    print("done!")
     step = -1
     return
   else:
-    print "step %d" % step
+    print("step %d" % step)
     for i in range(len(joints)):
       joints[i].set( int(original[i] + step * delta[i]) )  # linear slew
     send_all()
@@ -103,12 +103,12 @@ def run_this_old(event=None):
   global joints
   global commands
   global saves
-  print "row-run" + str(event.widget.row)
+  print("row-run" + str(event.widget.row))
   if saves[event.widget.row] == None:
-    print "nothing saved"
+    print("nothing saved")
     return
   for i in range(len(joints)):
-    print saves[event.widget.row][i]
+    print(saves[event.widget.row][i])
     joints[i].set( saves[event.widget.row][i] )
   send_all()
 
@@ -131,16 +131,16 @@ def do_prog(event=None):
     cur_prog = 0
     return
   # find next
-  print "Find next"
+  print("Find next")
   for i in range(cur_prog + 1, len(saves)):
     if saves[i] != None:
-      print "running %d" % i
+      print("running %d" % i)
       run_this(i)
       cur_prog = cur_prog + 1
       commands[0][0].after(int(  1500 * float(dwell.get())) ,do_prog)
       return
   # if you got here nothing ran!
-  print "no find"
+  print("no find")
   if cur_prog == -1:
     return
   cur_prog = -1
