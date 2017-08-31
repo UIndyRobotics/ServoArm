@@ -2,9 +2,16 @@ from Tkinter import *
 import serial
 import threading
 import time
+import sys
+
+port = ''
+if len(sys.argv) <= 1:
+  port = '/dev/tty.usbmodem1411'
+else:
+  port = sys.arv[1]
 
 # Set up serial
-ser = serial.Serial('/dev/tty.usbmodem1411', 9600)
+ser = serial.Serial(port, 9600)
 
 joints = [None] * 6
 commands = []
